@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectileLine : MonoBehaviour {
+public class ProjectileLine : MonoBehaviour
+{
     static public ProjectileLine S; // Singleton
 
     [Header("Set in Inspector")]
@@ -12,7 +13,7 @@ public class ProjectileLine : MonoBehaviour {
     private GameObject _poi;
     private List<Vector3> points;
 
-	void Awake()
+    void Awake()
     {
         S = this; // Set the singleton
         // Get a reerence to the LineRenderer
@@ -57,7 +58,36 @@ public class ProjectileLine : MonoBehaviour {
     {
         // *** Implement this code ***
 
+        Vector3 pt = poi.transform.position;
+        if (points.Count > 0 && (pt - lastPoint).magnitude < minDist)
+        {
+            //if point isn't far enough from the last point, it returns
+            return;
 
+        }
+
+        if (points.Count == 0)  //if this is the launch point...
+        {
+            Vector3 launchPosDiff = pt - Slingshot.Launch_POS;
+            //to be defined... its adds extea bit of line to add aimimg later
+
+            points.Add(pt + launchPosDiff);
+            points.Add(pt);
+            line.positionCount = 2;
+            //sets the first two points
+            line.SetPosition(0, points[0]);
+            line.SetPosition(1, points[1]);
+            //enables the LineRenderer 
+            line.enabled = true;
+        }
+        else
+        {
+            // normal behavior of adding a point
+            points.Add(pt);
+            line.positionCount = points.Count;
+            line.SetPosition(points.Count - 1, lastPoint);
+            line.enabled = true;
+        }
 
 
     }
